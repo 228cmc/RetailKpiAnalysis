@@ -12,8 +12,8 @@ def clean_data(file_path):
     # Load data
     df = pd.read_csv(file_path)
 
-    # Expected column names
-    required_columns = ['date', 'company', 'total_sales', 'web_traffic', 'ad_spend',
+    # Expected column names (ensuring order matches PostgreSQL table)
+    required_columns = ['sale_date', 'company_name', 'total_sales', 'web_traffic', 'ad_spend',
                         'customer_reviews', 'social_media_mentions']
 
     # Check if all required columns exist
@@ -30,7 +30,11 @@ def clean_data(file_path):
     df['customer_reviews'] = df['customer_reviews'].fillna(3.0)  # Default average review score
 
     # Convert date column to datetime
-    df['date'] = pd.to_datetime(df['date'])
+    df['sale_date'] = pd.to_datetime(df['sale_date'])
+
+    # Ensure column order matches PostgreSQL table
+    df = df[['sale_date', 'company_name', 'total_sales', 'web_traffic', 
+             'ad_spend', 'customer_reviews', 'social_media_mentions']]
 
     return df
 
@@ -44,4 +48,4 @@ if __name__ == "__main__":
     cleaned_data = clean_data(input_path)
     cleaned_data.to_csv(output_path, index=False)
 
-    print(f"Data cleaned and saved to '{output_path}'.")
+    print(f" Data cleaned and saved to '{output_path}'.")
